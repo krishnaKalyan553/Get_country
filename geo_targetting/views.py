@@ -9,5 +9,5 @@ def home_view(request):
         html = "<html><body>yor are in India </body></html>"
         return HttpResponse(html)
     else:
-        html = "<html><body>yor are not in India and Us </body></html>"
+        html = f"<html><body>returned country {country} </body></html>"
         return HttpResponse(html)
