@@ -4,10 +4,6 @@ import os
 base_dir = settings.BASE_DIR
 db_path = os.path.join(base_dir, 'geo_targetting', 'GeoLite2-City.mmdb')
 
-import logging
-
-logger = logging.getLogger(__name__)
-
 
 class GeoLocationMiddleware:
     def __init__(self, get_response):
@@ -15,8 +11,17 @@ class GeoLocationMiddleware:
         self.reader = geoip2.database.Reader(db_path)
 
     def __call__(self, request):
-        ip_address = request.META.get('REMOTE_ADDR')
+        ip_address = request.META.get('HTTP_X_FORWARDED_FOR')
+        if ip_address:
+            # The X-Forwarded-For header may contain a comma-separated list of IPs.
+            # The client's IP is typically the first in the list.
+            ip_address = ip_address.split(',')[0].strip()
+
+        # If X-Forwarded-For header is not present or empty, fall back to REMOTE_ADDR
+        if not ip_address:
+            ip_address = request.META.get('REMOTE_ADDR')
         # ip_address = '2405:201:c41f:e1ad:2208:4488:39b5:2970'
+        print(ip_address)
         try:
             location = self.reader.city(ip_address)
             country = location.country.name
