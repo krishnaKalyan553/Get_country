@@ -2,7 +2,7 @@ import geoip2.database
 from django.conf import settings
 import os
 base_dir = settings.BASE_DIR
-db_path = os.path.join(base_dir, 'GeoLite2-City.mmdb')
+db_path = os.path.join(base_dir, 'geo_targetting', 'GeoLite2-City.mmdb')
 class GeoLocationMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
